@@ -1,0 +1,24 @@
+
+[casabaldini_test] Activating dev environment...
+
+[casabaldini_test] Starting in dev mode...
+===========================================================================
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import runpy, sys;sys.path.pop(0);sys.argv.extend([]);runpy.run_module("casabaldini_test", run_name="__main__", alter_sys=True)
+                                                          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 231, in run_module
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/carlo/AreaComune/casabaldini_py/casabaldini_test/src/casabaldini_test/__main__.py", line 1, in <module>
+    from casabaldini_test.app import main
+  File "/home/carlo/AreaComune/casabaldini_py/casabaldini_test/src/casabaldini_test/app.py", line 6, in <module>
+    import httpx
+ModuleNotFoundError: No module named 'httpx'
+
+Problem running app casabaldini_test (return code 1).
+Saving log... started
+
+Log saved to /home/carlo/AreaComune/casabaldini_py/casabaldini_test/logs/briefcase.2026_06_21-23_47_45.dev.log
+
+Saving log... done
