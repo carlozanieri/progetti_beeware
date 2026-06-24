@@ -1,6 +1,6 @@
 # This project was generated with 0.4.2 using template: https://github.com/beeware/briefcase-template @ v0.4.2
 [tool.briefcase]
-project_name = "CasaBaldini Test"
+project_name = "CasaBaldini B&B"
 bundle = "eu.casabaldini"
 version = "0.0.1"
 url = "https://json.casabaldini.eu"
@@ -9,13 +9,13 @@ license-files = ["LICENSE"]
 author = "Carlo Zanieri"
 author_email = "carlo.zanieri@gmail.com"
 
-[tool.briefcase.app.casabaldini_test]
-formal_name = "CasaBaldini Test"
+[tool.briefcase.app.casabaldini]
+formal_name = "CasaBaldini B&B"
 description = "My first application"
 long_description = """More details about the app should go here.
 """
 sources = [
-    "src/casabaldini_test",
+    "src/casabaldini",
 ]
 test_sources = [
     "tests",
@@ -25,14 +25,14 @@ requires = [
     "httpx",
 ]
 
-[tool.briefcase.app.casabaldini_test.macOS]
+[tool.briefcase.app.casabaldini.macOS]
 universal_build = true
 requires = [
     "toga-cocoa~=0.5.0",
     "std-nslog~=1.0.3",
 ]
 
-[tool.briefcase.app.casabaldini_test.linux]
+[tool.briefcase.app.casabaldini.linux]
 requires = [
     "toga-gtk~=0.5.0",
     # PyGObject 3.52.1 enforces a requirement on libgirepository-2.0-dev. This library
@@ -41,7 +41,7 @@ requires = [
     "pygobject < 3.52.1",
 ]
 
-[tool.briefcase.app.casabaldini_test.linux.system.debian]
+[tool.briefcase.app.casabaldini.linux.system.debian]
 system_requires = [
     # Needed to compile pycairo wheel
     "libcairo2-dev",
@@ -67,7 +67,7 @@ system_runtime_requires = [
     # "gir1.2-webkit2-4.1",
 ]
 
-[tool.briefcase.app.casabaldini_test.linux.system.rhel]
+[tool.briefcase.app.casabaldini.linux.system.rhel]
 system_requires = [
     # Needed to compile pycairo wheel
     "cairo-gobject-devel",
@@ -86,7 +86,7 @@ system_runtime_requires = [
     # "webkit2gtk3",
 ]
 
-[tool.briefcase.app.casabaldini_test.linux.system.suse]
+[tool.briefcase.app.casabaldini.linux.system.suse]
 system_requires = [
     # Needed to compile pycairo wheel
     "cairo-devel",
@@ -105,7 +105,7 @@ system_runtime_requires = [
     # "libwebkit2gtk3", "typelib(WebKit2)",
 ]
 
-[tool.briefcase.app.casabaldini_test.linux.system.arch]
+[tool.briefcase.app.casabaldini.linux.system.arch]
 system_requires = [
     # Needed to compile pycairo wheel
     "cairo",
@@ -132,7 +132,7 @@ system_runtime_requires = [
     # "webkit2gtk",
 ]
 
-[tool.briefcase.app.casabaldini_test.linux.appimage]
+[tool.briefcase.app.casabaldini.linux.appimage]
 manylinux = "manylinux_2_28"
 
 system_requires = [
@@ -153,24 +153,24 @@ linuxdeploy_plugins = [
     "DEPLOY_GTK_VERSION=3 gtk",
 ]
 
-[tool.briefcase.app.casabaldini_test.linux.flatpak]
+[tool.briefcase.app.casabaldini.linux.flatpak]
 flatpak_runtime = "org.gnome.Platform"
 flatpak_runtime_version = "48"
 flatpak_sdk = "org.gnome.Sdk"
 
-[tool.briefcase.app.casabaldini_test.windows]
+[tool.briefcase.app.casabaldini.windows]
 requires = [
     "toga-winforms~=0.5.0",
 ]
 
 # Mobile deployments
-[tool.briefcase.app.casabaldini_test.iOS]
+[tool.briefcase.app.casabaldini.iOS]
 requires = [
     "toga-iOS~=0.5.0",
     "std-nslog~=1.0.3",
 ]
 
-[tool.briefcase.app.casabaldini_test.android]
+[tool.briefcase.app.casabaldini.android]
 requires = [
     "toga-android~=0.5.0",
 ]
@@ -193,7 +193,7 @@ build_gradle_dependencies = [
 # """
 
 # Web deployments
-[tool.briefcase.app.casabaldini_test.web]
+[tool.briefcase.app.casabaldini.web]
 requires = [
     "toga-web~=0.5.0",
 ]
