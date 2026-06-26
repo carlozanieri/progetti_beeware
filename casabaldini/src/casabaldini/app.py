@@ -54,7 +54,7 @@ class CasaBaldiniApp(toga.App):
                 background_color="#043a55",
             )
         ))
-
+        
         # --- Contenuto principale ---
         self.root_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
 
@@ -141,7 +141,7 @@ class CasaBaldiniApp(toga.App):
             content=self.links_box,
             horizontal=True,
             vertical=False,
-            style=Pack(height=80, background_color="#043a55")
+            style=Pack(height=100, background_color="#043a55")  # aumentato da 80 a 100
         )
 
         # Assembla root_box
@@ -309,6 +309,7 @@ class CasaBaldiniApp(toga.App):
                         on_press=lambda w, u=url: webbrowser.open(u),
                         style=Pack(
                             padding_top=3,
+                            padding_bottom=8,
                             font_size=10,
                             background_color="#043a55",
                             color="white",

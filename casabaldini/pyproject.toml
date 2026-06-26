@@ -1,6 +1,6 @@
 # This project was generated with 0.4.2 using template: https://github.com/beeware/briefcase-template @ v0.4.2
 [tool.briefcase]
-project_name = "CasaBaldini B&B"
+project_name = "CasaBaldini B and B"
 bundle = "eu.casabaldini"
 version = "0.0.1"
 url = "https://json.casabaldini.eu"
@@ -10,7 +10,7 @@ author = "Carlo Zanieri"
 author_email = "carlo.zanieri@gmail.com"
 
 [tool.briefcase.app.casabaldini]
-formal_name = "CasaBaldini B&B"
+formal_name = "CasaBaldini B and B"
 description = "My first application"
 long_description = """More details about the app should go here.
 """
