@@ -242,17 +242,17 @@ class CasaBaldiniApp(toga.App):
                             titolo,
                             on_press=lambda w: asyncio.create_task(
                                 self.apri_dovemangiare()
-                        ),
-                        style=Pack(
-                            padding_left=15,
-                            padding_top=8,
-                            padding_bottom=8,
-                            background_color="#1a3a4a",
-                            color="white",
-                            flex=1,
-                        )
-                )   
-                self.drawer_box.add(btn)
+                            ),
+                            style=Pack(
+                                padding_left=15,
+                                padding_top=8,
+                                padding_bottom=8,
+                                background_color="#1a3a4a",
+                                color="white",
+                                flex=1,
+                            )
+                        )   
+                        self.drawer_box.add(btn)
     
         except Exception as e:
             print(f"ERRORE menu: {e}")
@@ -390,7 +390,7 @@ class CasaBaldiniApp(toga.App):
         self.paused = False
 
     async def apri_dovemangiare(self):
-    # Chiudi drawer
+        # Chiudi drawer
         self.main_window.content = self.dovemangiare_box
         self.menu_aperto = False
 
@@ -470,14 +470,17 @@ class CasaBaldiniApp(toga.App):
                 self.ristoranti_box.add(riga)
 
                 # Separatore visivo
-                self.ristoranti_box.add(toga.Divider())
-
+                self.ristoranti_box.add(toga.Box(
+                    style=Pack(height=1, background_color="#cccccc", margin_top=2, margin_bottom=2)
+                ))
+            for i, food in enumerate(foods_data):
+                print(f"Processo ristorante {i+1}: {food.get('titolo', '')}")
         except Exception as e:
             print(f"ERRORE dovemangiare: {e}")
-        self.ristoranti_box.add(toga.Label(
-            f"Errore caricamento: {e}",
-            style=Pack(color="red", padding=10)
-        ))
+            self.ristoranti_box.add(toga.Label(
+                f"Errore caricamento: {e}",
+                style=Pack(color="red", padding=10)
+            ))
 
 
 def main():
