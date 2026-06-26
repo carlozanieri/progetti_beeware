@@ -54,7 +54,28 @@ class CasaBaldiniApp(toga.App):
                 background_color="#043a55",
             )
         ))
-        
+        # --- Schermata Dove Mangiare ---
+        self.dovemangiare_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
+
+        btn_indietro_dm = toga.Button(
+            "← Indietro",
+            on_press=self.chiudi_dovemangiare,
+            style=Pack(padding=10, background_color="#043a55", color="white")
+            )
+        self.dovemangiare_box.add(btn_indietro_dm)
+        self.dovemangiare_box.add(toga.Label(
+                "Dove Mangiare",
+                style=Pack(font_size=18, font_weight="bold", padding=10)
+            ))
+
+        self.ristoranti_box = toga.Box(style=Pack(direction=COLUMN))
+        self.dovemangiare_scroll = toga.ScrollContainer(
+            content=self.ristoranti_box,
+            horizontal=False,
+            vertical=True,
+            style=Pack(flex=1)
+        )
+        self.dovemangiare_box.add(self.dovemangiare_scroll)
         # --- Contenuto principale ---
         self.root_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
 
@@ -216,8 +237,23 @@ class CasaBaldiniApp(toga.App):
                                 flex=1,
                             )
                         )
-                        self.drawer_box.add(btn)
-
+                    elif tipopage == "modale" and "dovemangiare" in link:
+                        btn = toga.Button(
+                            titolo,
+                            on_press=lambda w: asyncio.create_task(
+                                self.apri_dovemangiare()
+                        ),
+                        style=Pack(
+                            padding_left=15,
+                            padding_top=8,
+                            padding_bottom=8,
+                            background_color="#1a3a4a",
+                            color="white",
+                            flex=1,
+                        )
+                )   
+                self.drawer_box.add(btn)
+    
         except Exception as e:
             print(f"ERRORE menu: {e}")
             self.status_label.text = f"Errore menu: {e}"
@@ -352,6 +388,96 @@ class CasaBaldiniApp(toga.App):
     async def riprendi_autoplay(self):
         await asyncio.sleep(8)
         self.paused = False
+
+    async def apri_dovemangiare(self):
+    # Chiudi drawer
+        self.main_window.content = self.dovemangiare_box
+        self.menu_aperto = False
+
+    # Carica ristoranti se non già caricati
+        if not self.ristoranti_box.children:
+            await self.carica_dovemangiare()
+
+    async def chiudi_dovemangiare(self, widget):
+        self.main_window.content = self.root_box
+
+    async def carica_dovemangiare(self):
+        try:
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                response = await client.get(f"{API_BASE}/foods")
+                response.raise_for_status()
+                foods_data = response.json()
+
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                for food in foods_data:
+                    titolo = food.get("titolo", "")
+                    indirizzo = food.get("indirizzo", "")
+                    telefono = food.get("telefono", "")
+                    link = food.get("link", "")
+                    img_name = food.get("img", "")
+                    img_url = f"{IMG_BASE}/ristoranti/{img_name}"
+
+                # Box orizzontale: immagine + info
+                    riga = toga.Box(style=Pack(
+                        direction=ROW,
+                        padding=8,
+                    ))
+
+                # Immagine
+                try:
+                    img_response = await client.get(img_url)
+                    img_response.raise_for_status()
+                    img = toga.Image(data=img_response.content)
+                    img_view = toga.ImageView(
+                        image=img,
+                        style=Pack(width=80, height=80)
+                    )
+                    riga.add(img_view)
+                except Exception as e:
+                    print(f"Errore immagine {img_name}: {e}")
+                    # Placeholder se immagine non disponibile
+                    riga.add(toga.Box(style=Pack(width=80, height=80)))
+
+                # Info testuali
+                info_box = toga.Box(style=Pack(
+                    direction=COLUMN,
+                    padding_left=10,
+                    flex=1,
+                ))
+                info_box.add(toga.Label(
+                    titolo,
+                    style=Pack(font_size=14, font_weight="bold", padding_bottom=3)
+                ))
+                if indirizzo:
+                    info_box.add(toga.Label(
+                        f"📍 {indirizzo}",
+                        style=Pack(font_size=11, padding_bottom=2)
+                    ))
+                if telefono:
+                    info_box.add(toga.Label(
+                        f"📞 {telefono}",
+                        style=Pack(font_size=11, padding_bottom=2)
+                    ))
+                if link:
+                    btn_link = toga.Button(
+                        "Apri sito →",
+                        on_press=lambda w, u=link: webbrowser.open(u),
+                        style=Pack(font_size=11, padding_top=3)
+                    )
+                    info_box.add(btn_link)
+
+                riga.add(info_box)
+                self.ristoranti_box.add(riga)
+
+                # Separatore visivo
+                self.ristoranti_box.add(toga.Divider())
+
+        except Exception as e:
+            print(f"ERRORE dovemangiare: {e}")
+        self.ristoranti_box.add(toga.Label(
+            f"Errore caricamento: {e}",
+            style=Pack(color="red", padding=10)
+        ))
 
 
 def main():
