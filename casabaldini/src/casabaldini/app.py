@@ -68,7 +68,10 @@ class CasaBaldiniApp(toga.App):
                 style=Pack(font_size=18, font_weight="bold", padding=10)
             ))
 
-        self.ristoranti_box = toga.Box(style=Pack(direction=COLUMN))
+        self.ristoranti_box = toga.Box(style=Pack(
+            direction=COLUMN,
+            
+        ))
         self.dovemangiare_scroll = toga.ScrollContainer(
             content=self.ristoranti_box,
             horizontal=False,
@@ -419,8 +422,9 @@ class CasaBaldiniApp(toga.App):
 
                 # Box orizzontale: immagine + info
                     riga = toga.Box(style=Pack(
-                        direction=ROW,
-                        padding=8,
+                                        direction=ROW,
+                                        padding=8,
+                                        height=100,  # altezza fissa per ogni ristorante
                     ))
 
                 # Immagine
@@ -473,14 +477,15 @@ class CasaBaldiniApp(toga.App):
                 self.ristoranti_box.add(toga.Box(
                     style=Pack(height=1, background_color="#cccccc", margin_top=2, margin_bottom=2)
                 ))
-            for i, food in enumerate(foods_data):
-                print(f"Processo ristorante {i+1}: {food.get('titolo', '')}")
+            self.ristoranti_box.refresh()
+            self.dovemangiare_scroll.refresh()
         except Exception as e:
             print(f"ERRORE dovemangiare: {e}")
             self.ristoranti_box.add(toga.Label(
                 f"Errore caricamento: {e}",
                 style=Pack(color="red", padding=10)
             ))
+            self.dovemangiare_scroll.content = self.ristoranti_box
 
 
 def main():
