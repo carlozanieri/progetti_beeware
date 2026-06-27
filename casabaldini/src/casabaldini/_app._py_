@@ -191,10 +191,8 @@ class CasaBaldiniApp(toga.App):
     async def apri_dovemangiare(self):
         self.main_window.content = self.dovemangiare_box
         self.menu_aperto = False
-        print(f"ristoranti_list.data prima: {self.ristoranti_list.data}")
         if not self.ristoranti_list.data:
             await self.carica_dovemangiare()
-        print(f"ristoranti_list.data dopo: {self.ristoranti_list.data}")
 
     async def chiudi_dovemangiare(self, widget):
         self.main_window.content = self.root_box
