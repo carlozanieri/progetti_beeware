@@ -8,6 +8,8 @@ import httpx
 import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
+import tempfile
+import os
 
 API_BASE = "https://json.casabaldini.eu/api/v1"
 IMG_BASE = "https://json.casabaldini.eu/static/img"
@@ -53,13 +55,57 @@ class CasaBaldiniApp(toga.App):
             "Dove Mangiare",
             style=Pack(font_size=18, font_weight="bold", margin=10)
         ))
-        self.ristoranti_list = toga.DetailedList(
-            accessors=["title", "subtitle", "icon"],
-            on_select=self.ristorante_selezionato,
-            style=Pack(flex=1)
+        # La DetailedList verrà creata dopo il caricamento dati
+        self.ristoranti_list = None
+        # --- Schermata Prenotazioni ---
+        self.prenotazioni_box = toga.Box(style=Pack(direction=COLUMN, flex=1, background_color="#000000"))
+        
+        # Maniglia superiore
+        maniglia = toga.Box(style=Pack(width=55, height=6, background_color="#404040", margin_top=10, margin_bottom=20))
+        maniglia_container = toga.Box(style=Pack(direction=ROW, alignment="center"))
+        maniglia_container.add(maniglia)
+        self.prenotazioni_box.add(maniglia_container)
+        
+        # Titolo
+        self.prenotazioni_box.add(toga.Label(
+            "Prenotazioni CasaBaldini",
+            style=Pack(font_size=22, font_weight="bold", color="white", margin_bottom=10)
+        ))
+        
+        # Contatti
+        self._aggiungi_contatto(
+            self.prenotazioni_box,
+            "Chiamaci",
+            "+39 320 7060411",
+            "tel:+393207060411"
         )
-        self.dovemangiare_box.add(self.ristoranti_list)
-
+        self._aggiungi_contatto(
+            self.prenotazioni_box,
+            "Chiamaci tel. fisso",
+            "+39 055 2741209",
+            "tel:+390552741209"
+        )
+        self._aggiungi_contatto(
+            self.prenotazioni_box,
+            "Inviaci una mail",
+            "carlo.zanieri@gmail.com",
+            "mailto:carlo.zanieri@gmail.com?subject=Richiesta informazioni CasaBaldini"
+        )
+        
+        # Testo informativo
+        self.prenotazioni_box.add(toga.Label(
+            "Le prenotazioni sono soggette a disponibilità. "
+            "Contattaci direttamente per ricevere la migliore offerta garantita.",
+            style=Pack(font_style="italic", color="#b3b3b3", font_size=13, margin=20)
+        ))
+        
+        # Bottone Chiudi
+        btn_chiudi_pren = toga.Button(
+            "CHIUDI",
+            on_press=self.chiudi_prenotazioni,
+            style=Pack(margin=10, background_color="#1a1a1a", color="white", flex=1)
+        )
+        self.prenotazioni_box.add(btn_chiudi_pren)
         # --- Contenuto principale ---
         self.root_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
 
@@ -178,7 +224,14 @@ class CasaBaldiniApp(toga.App):
                                        background_color="#1a3a4a", color="white", flex=1)
                         )
                         self.drawer_box.add(btn)
-
+                    elif tipopage == "modale" and "prenotazioni" in link:
+                        btn = toga.Button(
+                            titolo,
+                            on_press=lambda w: asyncio.create_task(self.apri_prenotazioni()),
+                            style=Pack(margin_left=15, margin_top=8, margin_bottom=8,
+                                       background_color="#1a3a4a", color="white", flex=1)
+                        )
+                        self.drawer_box.add(btn)
         except Exception as err:
             print(f"ERRORE menu: {err}")
 
@@ -191,10 +244,7 @@ class CasaBaldiniApp(toga.App):
     async def apri_dovemangiare(self):
         self.main_window.content = self.dovemangiare_box
         self.menu_aperto = False
-        print(f"ristoranti_list.data prima: {self.ristoranti_list.data}")
-        if not self.ristoranti_list.data:
-            await self.carica_dovemangiare()
-        print(f"ristoranti_list.data dopo: {self.ristoranti_list.data}")
+        await self.carica_dovemangiare()
 
     async def chiudi_dovemangiare(self, widget):
         self.main_window.content = self.root_box
@@ -207,50 +257,118 @@ class CasaBaldiniApp(toga.App):
                 foods_data = response.json()
 
             items = []
-            async with httpx.AsyncClient(timeout=15.0) as client:
-                for food in foods_data:
-                    titolo = food.get("titolo", "")
-                    indirizzo = food.get("indirizzo", "")
-                    telefono = food.get("telefono", "")
-                    url = food.get("link", "")
-                    img_name = food.get("img", "")
-                    img_url = f"{IMG_BASE}/ristoranti/{img_name}"
+            for food in foods_data:
+                titolo = food.get("titolo", "")
+                indirizzo = food.get("indirizzo", "")
+                telefono = food.get("telefono", "")
+                url = food.get("link", "")
+                img_name = food.get("img", "")
 
-                    self.foods_urls[titolo] = url
+                self.foods_urls[titolo] = url
 
-                    subtitle = ""
-                    if indirizzo:
-                        subtitle += f"📍 {indirizzo}"
-                    if telefono:
-                        subtitle += f"  📞 {telefono}"
+                subtitle = ""
+                if indirizzo:
+                    subtitle += f"📍 {indirizzo}"
+                if telefono:
+                    subtitle += f"  📞 {telefono}"
 
-                    icon = None
-                    try:
-                        img_response = await client.get(img_url)
-                        img_response.raise_for_status()
-                        icon = toga.Image(data=img_response.content)
-                    except Exception as img_err:
-                        print(f"Errore immagine {img_name}: {img_err}")
+                items.append({
+                    "title": titolo,
+                    "subtitle": subtitle,
+                    "icon": None,  # temporaneamente nessuna icona
+                })
+                print(f"Aggiunto: {titolo}")
 
-                    items.append({
-                        "title": titolo,
-                        "subtitle": subtitle,
-                        "icon": icon,
-                    })
-                    print(f"Aggiunto: {titolo}")
+            # Rimuovi la vecchia lista se esiste
+            if self.ristoranti_list is not None:
+                self.dovemangiare_box.remove(self.ristoranti_list)
 
-            self.ristoranti_list.data = items
+            # Crea una nuova DetailedList con i dati freschi
+            self.ristoranti_list = toga.DetailedList(
+                data=items,
+                accessors=["title", "subtitle", "icon"],
+                on_select=self.ristorante_selezionato,
+                style=Pack(flex=1)
+            )
+
+            # Aggiungi la nuova lista al box
+            self.dovemangiare_box.add(self.ristoranti_list)
+
             print(f"Totale ristoranti caricati: {len(items)}")
 
         except Exception as err:
             print(f"ERRORE dovemangiare: {err}")
 
-    def ristorante_selezionato(self, widget, row, **kwargs):
-        if row is None:
-            return
-        url = self.foods_urls.get(row.title, "")
-        if url:
-            webbrowser.open(url)
+    def ristorante_selezionato(self, widget, **kwargs):
+        # Recupera la selezione corrente dalla DetailedList
+        if hasattr(widget, 'selection') and widget.selection is not None:
+            row = widget.selection
+            # row è l'elemento selezionato (il dizionario che abbiamo creato)
+            titolo = row.title if hasattr(row, 'title') else row.get('title', '')
+            url = self.foods_urls.get(titolo, "")
+            if url:
+                webbrowser.open(url)
+
+    def _aggiungi_contatto(self, box, titolo, sottotitolo, url):
+        """Crea un box contatto cliccabile e lo aggiunge al box passato"""
+        contatto_box = toga.Box(style=Pack(direction=ROW, margin=10))
+        
+        # Testi
+        testi_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
+        testi_box.add(toga.Label(
+            titolo,
+            style=Pack(font_weight="bold", color="white", font_size=14)
+        ))
+        testi_box.add(toga.Label(
+            sottotitolo,
+            style=Pack(color="#b3b3b3", font_size=12)
+        ))
+        
+        contatto_box.add(testi_box)
+        
+        # Rendi cliccabile tutto il box
+        btn = toga.Button(
+            "›",
+            on_press=lambda w, u=url: webbrowser.open(u),
+            style=Pack(width=40, background_color="#1a1a1a", color="white")
+        )
+        contatto_box.add(btn)
+        
+        box.add(contatto_box)
+
+    def _aggiungi_contatto(self, box, titolo, sottotitolo, url):
+        """Crea un box contatto cliccabile e lo aggiunge al box passato"""
+        contatto_box = toga.Box(style=Pack(direction=ROW, margin=10))
+        
+        # Testi
+        testi_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
+        testi_box.add(toga.Label(
+            titolo,
+            style=Pack(font_weight="bold", color="white", font_size=14)
+        ))
+        testi_box.add(toga.Label(
+            sottotitolo,
+            style=Pack(color="#b3b3b3", font_size=12)
+        ))
+        
+        contatto_box.add(testi_box)
+        
+        # Rendi cliccabile tutto il box
+        btn = toga.Button(
+            "›",
+            on_press=lambda w, u=url: webbrowser.open(u),
+            style=Pack(width=40, background_color="#1a1a1a", color="white")
+        )
+        contatto_box.add(btn)
+        
+        box.add(contatto_box)
+
+    async def apri_prenotazioni(self):
+        self.main_window.content = self.prenotazioni_box
+        self.menu_aperto = False
+
+    def chiudi_prenotazioni(self, widget):
+        self.main_window.content = self.root_box
 
     async def carica_slider(self, dir_val):
         self.slides = []
