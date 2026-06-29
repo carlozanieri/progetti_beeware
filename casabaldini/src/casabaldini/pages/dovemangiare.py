@@ -93,6 +93,8 @@ class DoveMangiarePage:
         if hasattr(widget, 'selection') and widget.selection is not None:
             row = widget.selection
             titolo = row.title if hasattr(row, 'title') else row.get('title', '')
-            url = self.foods_urls.get(titolo, "")
+            # Rimuovi l'emoji iniziale se presente
+            titolo_pulito = titolo.replace("🍽️  ", "").replace("🍽 ", "").strip()
+            url = self.foods_urls.get(titolo_pulito, "")
             if url:
                 webbrowser.open(url)
