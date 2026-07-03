@@ -13,7 +13,7 @@ SLIDE_INTERVAL = 4
 class SliderManager:
     """Gestisce lo slider: caricamento, visualizzazione, autoplay"""
 
-    def __init__(self, image_view, titolo_label, caption_label, status_label):
+    def __init__(self, image_view, titolo_label, caption_label, status_label, on_image_click=None):
         self.image_view = image_view
         self.titolo_label = titolo_label
         self.caption_label = caption_label
@@ -24,23 +24,43 @@ class SliderManager:
         self.autoplay_task = None
         self.paused = False
         self.indicatori_box = None
+        self.on_image_click = on_image_click
 
     def build_controls(self):
-        """Costruisce i pulsanti freccia e gli indicatori"""
+        """Costruisce i pulsanti freccia, dettaglio e gli indicatori"""
         controls_box = toga.Box(style=Pack(direction=COLUMN))
-        
+
         # Pulsanti navigazione
         btn_prev, btn_next = self.build_arrow_buttons()
         nav_row = toga.Box(style=Pack(direction=ROW, margin=5))
         nav_row.add(btn_prev)
         nav_row.add(btn_next)
         controls_box.add(nav_row)
-        
-        # Box indicatori (pallini cliccabili)
+
+        # Debug
+        print(f"on_image_click: {self.on_image_click}")
+
+        # Pulsante dettaglio
+        if self.on_image_click:
+            print("Creo pulsante dettaglio")
+            btn_dettaglio = toga.Button(
+                "🔍  Dettaglio",
+                on_press=lambda w: self.on_image_click(
+                    self.slides[self.current_index] if self.slides else {},
+                    self.slide_images[self.current_index] if self.slide_images else None
+                ),
+                style=Pack(margin=5)
+            )
+            controls_box.add(btn_dettaglio)
+        else:
+            print("on_image_click è None, non creo il pulsante")
+
+        # Box indicatori
         self.indicatori_box = toga.Box(style=Pack(direction=ROW, alignment="center", margin_bottom=10))
         controls_box.add(self.indicatori_box)
-        
+
         return controls_box
+    
     def build_arrow_buttons(self):
         """Restituisce i due pulsanti freccia separatamente"""
         btn_prev = toga.Button(
@@ -159,3 +179,9 @@ class SliderManager:
     async def _riprendi(self):
         await asyncio.sleep(8)
         self.paused = False
+
+    def build_clickable_image(self):
+        """Rende l'ImageView cliccabile sostituendola con un Button contenente l'immagine"""
+        # Non possiamo rendere ImageView cliccabile direttamente,
+        # ma possiamo intercettare il click con un Box sovrapposto
+        pass

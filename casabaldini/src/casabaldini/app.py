@@ -12,6 +12,7 @@ from .links import LinksManager
 from .menu import MenuManager
 from .pages.dovemangiare import DoveMangiarePage
 from .pages.prenotazioni import PrenotazioniPage
+from .pages.dettaglio_slider import DettaglioSliderPage
 
 
 class CasaBaldiniApp(toga.App):
@@ -87,6 +88,14 @@ class CasaBaldiniApp(toga.App):
         self.main_window = toga.MainWindow(title="CasaBaldini")
         self.main_window.content = self.root_box
         self.main_window.show()
+        self.dettaglio_page = DettaglioSliderPage(self)
+        self.dettaglio_page.build()
+
+# Modifica la creazione dello SliderManager per passare la callback:
+        self.slider_manager = SliderManager(
+            self.image_view, self.titolo_label, self.caption_label, self.status_label,
+            on_image_click=self._mostra_dettaglio_slide
+            )
 
         asyncio.create_task(self._inizializza())
 
@@ -95,6 +104,10 @@ class CasaBaldiniApp(toga.App):
         await self.menu_manager.load_data()
         await self.slider_manager.load("index")
         await self.links_manager.load()
+
+    def _mostra_dettaglio_slide(self, slide, img):
+        """Apre la pagina di dettaglio per la slide corrente"""
+        self.dettaglio_page.show(slide, img)   
 
 
 def main():
