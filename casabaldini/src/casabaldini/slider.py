@@ -37,29 +37,29 @@ class SliderManager:
         nav_row.add(btn_next)
         controls_box.add(nav_row)
 
-        # Debug
-        print(f"on_image_click: {self.on_image_click}")
-
+        print(f"DEBUG build_controls on_image_click = {self.on_image_click}")
         # Pulsante dettaglio
         if self.on_image_click:
-            print("Creo pulsante dettaglio")
             btn_dettaglio = toga.Button(
                 "🔍  Dettaglio",
-                on_press=lambda w: self.on_image_click(
-                    self.slides[self.current_index] if self.slides else {},
-                    self.slide_images[self.current_index] if self.slide_images else None
-                ),
+                on_press=self._on_dettaglio_click,
                 style=Pack(margin=5)
             )
             controls_box.add(btn_dettaglio)
-        else:
-            print("on_image_click è None, non creo il pulsante")
 
-        # Box indicatori
+        # Box indicatori (pallini cliccabili)
         self.indicatori_box = toga.Box(style=Pack(direction=ROW, alignment="center", margin_bottom=10))
         controls_box.add(self.indicatori_box)
 
         return controls_box
+
+    def _on_dettaglio_click(self, widget):
+        """Callback per il pulsante dettaglio"""
+        if self.on_image_click and self.slides and self.slide_images:
+            slide = self.slides[self.current_index]
+            img = self.slide_images[self.current_index]
+            if img:
+                self.on_image_click(slide, img)
     
     def build_arrow_buttons(self):
         """Restituisce i due pulsanti freccia separatamente"""
