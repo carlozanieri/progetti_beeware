@@ -26,7 +26,6 @@ class CasaBaldiniApp(toga.App):
         navbar = toga.Box(style=Pack(direction=ROW, background_color="#043a55", padding=8))
         btn_hamburger = toga.Button(
             "☰",
-            on_press=self.menu_manager.toggle if hasattr(self, 'menu_manager') else None,
             style=Pack(width=40, height=40, background_color="#043a55", color="white", font_size=18)
         )
         self.titolo_navbar = toga.Label(
@@ -51,9 +50,10 @@ class CasaBaldiniApp(toga.App):
             "", style=Pack(font_size=12, color="#555555", margin_left=10, margin_bottom=8)
         )
 
-        # Slider manager
+        # Slider manager (creato una volta sola, con callback)
         self.slider_manager = SliderManager(
-            self.image_view, self.titolo_label, self.caption_label, self.status_label
+            self.image_view, self.titolo_label, self.caption_label, self.status_label,
+            on_image_click=self._mostra_dettaglio_slide
         )
         nav_row = self.slider_manager.build_controls()
 
@@ -73,8 +73,6 @@ class CasaBaldiniApp(toga.App):
         # Menu manager
         self.menu_manager = MenuManager(self)
         self.menu_overlay = self.menu_manager.build_overlay()
-
-        # Ora possiamo agganciare il pulsante hamburger
         btn_hamburger.on_press = self.menu_manager.toggle
 
         # Pages
@@ -84,18 +82,13 @@ class CasaBaldiniApp(toga.App):
         self.prenotazioni_page = PrenotazioniPage(self)
         self.prenotazioni_page.build()
 
+        self.dettaglio_page = DettaglioSliderPage(self)
+        self.dettaglio_page.build()
+
         # Finestra principale
         self.main_window = toga.MainWindow(title="CasaBaldini")
         self.main_window.content = self.root_box
         self.main_window.show()
-        self.dettaglio_page = DettaglioSliderPage(self)
-        self.dettaglio_page.build()
-
-# Modifica la creazione dello SliderManager per passare la callback:
-        self.slider_manager = SliderManager(
-            self.image_view, self.titolo_label, self.caption_label, self.status_label,
-            on_image_click=self._mostra_dettaglio_slide
-            )
 
         asyncio.create_task(self._inizializza())
 
@@ -107,7 +100,7 @@ class CasaBaldiniApp(toga.App):
 
     def _mostra_dettaglio_slide(self, slide, img):
         """Apre la pagina di dettaglio per la slide corrente"""
-        self.dettaglio_page.show(slide, img)   
+        self.dettaglio_page.show(slide, img)
 
 
 def main():

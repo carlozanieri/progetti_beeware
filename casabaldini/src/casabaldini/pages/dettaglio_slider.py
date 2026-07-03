@@ -16,7 +16,6 @@ class DettaglioSliderPage:
         """Costruisce la pagina dettaglio"""
         self.box = toga.Box(style=Pack(direction=COLUMN, flex=1))
 
-        # Pulsante indietro
         btn_indietro = toga.Button(
             "← Indietro",
             on_press=self.close,
@@ -24,18 +23,15 @@ class DettaglioSliderPage:
         )
         self.box.add(btn_indietro)
 
-        # Immagine
         self.detail_image = toga.ImageView(style=Pack(flex=1, height=300))
         self.box.add(self.detail_image)
 
-        # Titolo
         self.detail_titolo = toga.Label(
             "",
             style=Pack(font_size=22, font_weight="bold", margin=15)
         )
         self.box.add(self.detail_titolo)
 
-        # Testo (in uno ScrollContainer per testi lunghi)
         self.detail_testo = toga.Label(
             "",
             style=Pack(font_size=16, margin=15, margin_top=0)
