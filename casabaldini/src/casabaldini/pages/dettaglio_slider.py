@@ -20,7 +20,7 @@ class DettaglioSliderPage:
         btn_indietro = toga.Button(
             "← Indietro",
             on_press=self.close,
-            style=Pack(margin=10, background_color="#043a55", color="white")
+            style=Pack(margin=5, background_color="#043a55", color="white", width=200, margin_left=50)
         )
         self.box.add(btn_indietro)
 
@@ -53,9 +53,15 @@ class DettaglioSliderPage:
             style=Pack(flex=1)
         )
         self.box.add(testo_scroll)
-
+        # Pulsante indietro
+        btn_indietro = toga.Button(
+            "← Indietro",
+            on_press=self.close,
+            style=Pack(margin=10, background_color="#043a55", color="white", width=200, margin_left=50)
+        )
+        self.box.add(btn_indietro)
         return self.box
-
+        
     def show(self, slide, img):
         """Popola e mostra la pagina di dettaglio"""
         self.detail_image.image = img
