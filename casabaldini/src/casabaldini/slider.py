@@ -27,8 +27,10 @@ class SliderManager:
         self.on_image_click = on_image_click
 
     def build_controls(self):
+
         """Costruisce i pulsanti freccia, dettaglio e gli indicatori"""
         controls_box = toga.Box(style=Pack(direction=COLUMN))
+
         # Pulsante dettaglio
         if self.on_image_click:
             print("Creo pulsante dettaglio")
@@ -50,7 +52,7 @@ class SliderManager:
         nav_row.add(btn_next)
         controls_box.add(nav_row)
 
-       # Box indicatori
+        # Box indicatori
         self.indicatori_box = toga.Box(style=Pack(direction=ROW, alignment="center", margin_bottom=10))
         controls_box.add(self.indicatori_box)
 
@@ -135,7 +137,7 @@ class SliderManager:
                 btn = toga.Button(
                     "●",
                     on_press=lambda w, idx=i: self._vai_a(idx),
-                    style=Pack(width=30, height=30, font_size=16, margin=2,
+                    style=Pack(width=30, height=30, font_size=16, margin=5,
                                background_color="#00000000", color="#043a55")
                 )
             else:
@@ -143,7 +145,7 @@ class SliderManager:
                 btn = toga.Button(
                     "○",
                     on_press=lambda w, idx=i: self._vai_a(idx),
-                    style=Pack(width=30, height=30, font_size=14, margin=2,
+                    style=Pack(width=30, height=30, font_size=14, margin=5,
                                background_color="#00000000", color="#999999")
                 )
             self.indicatori_box.add(btn)
