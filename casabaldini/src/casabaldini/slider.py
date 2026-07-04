@@ -29,7 +29,20 @@ class SliderManager:
     def build_controls(self):
         """Costruisce i pulsanti freccia, dettaglio e gli indicatori"""
         controls_box = toga.Box(style=Pack(direction=COLUMN))
-
+        # Pulsante dettaglio
+        if self.on_image_click:
+            print("Creo pulsante dettaglio")
+            btn_dettaglio = toga.Button(
+                "🔍 Dettaglio",
+                on_press=lambda w: self.on_image_click(
+                    self.slides[self.current_index] if self.slides else {},
+                    self.slide_images[self.current_index] if self.slide_images else None
+                ),
+                style=Pack(margin=5, width=150, margin_left=200)
+            )
+            controls_box.add(btn_dettaglio)
+        else:
+            print("on_image_click è None, non creo il pulsante")
         # Pulsanti navigazione
         btn_prev, btn_next = self.build_arrow_buttons()
         nav_row = toga.Box(style=Pack(direction=ROW, margin=5))
@@ -37,25 +50,7 @@ class SliderManager:
         nav_row.add(btn_next)
         controls_box.add(nav_row)
 
-        # Debug
-        print(f"on_image_click: {self.on_image_click}")
-
-        # Pulsante dettaglio
-        if self.on_image_click:
-            print("Creo pulsante dettaglio")
-            btn_dettaglio = toga.Button(
-                "🔍  Dettaglio",
-                on_press=lambda w: self.on_image_click(
-                    self.slides[self.current_index] if self.slides else {},
-                    self.slide_images[self.current_index] if self.slide_images else None
-                ),
-                style=Pack(margin=5)
-            )
-            controls_box.add(btn_dettaglio)
-        else:
-            print("on_image_click è None, non creo il pulsante")
-
-        # Box indicatori
+       # Box indicatori
         self.indicatori_box = toga.Box(style=Pack(direction=ROW, alignment="center", margin_bottom=10))
         controls_box.add(self.indicatori_box)
 
@@ -125,9 +120,9 @@ class SliderManager:
         img = self.slide_images[self.current_index]
         if img:
             self.image_view.image = img
-        self.titolo_label.text = slide.get("titolo", "")
-        self.caption_label.text = slide.get("caption", "")
-        self._aggiorna_indicatori()
+            self.titolo_label.text = slide.get("titolo", "")
+            """self.caption_label.text = slide.get("caption", "")"""
+            self._aggiorna_indicatori()
 
     def _aggiorna_indicatori(self):
         """Aggiorna i pallini indicatori cliccabili"""
