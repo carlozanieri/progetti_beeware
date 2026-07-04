@@ -1,1 +1,2 @@
-cd src && python -m casabaldini
+
+cd src && python -m casabaldini && cd ..
