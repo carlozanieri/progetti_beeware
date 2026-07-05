@@ -48,12 +48,13 @@ class SliderManager:
         # Pulsanti navigazione
         btn_prev, btn_next = self.build_arrow_buttons()
         nav_row = toga.Box(style=Pack(direction=ROW, margin=5))
+
         nav_row.add(btn_prev)
         nav_row.add(btn_next)
         controls_box.add(nav_row)
 
         # Box indicatori
-        self.indicatori_box = toga.Box(style=Pack(direction=ROW, alignment="center", margin_bottom=10))
+        self.indicatori_box = toga.Box(style=Pack(direction=ROW, align_items="center", margin_bottom=10))
         controls_box.add(self.indicatori_box)
 
         return controls_box
