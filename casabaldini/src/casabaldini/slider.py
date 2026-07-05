@@ -40,7 +40,7 @@ class SliderManager:
                     self.slides[self.current_index] if self.slides else {},
                     self.slide_images[self.current_index] if self.slide_images else None
                 ),
-                style=Pack(margin=5, width=150, margin_left=200)
+                style=Pack(margin=10, width=150, align_items="center", margin_left=200)
             )
             controls_box.add(btn_dettaglio)
         else:

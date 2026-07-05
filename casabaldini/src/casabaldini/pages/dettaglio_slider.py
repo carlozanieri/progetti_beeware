@@ -41,7 +41,7 @@ class DettaglioSliderPage:
         # Testo in area scrollabile e sola lettura
         self.detail_testo = toga.MultilineTextInput(
             readonly=True,
-            style=Pack(flex=1, margin=15, margin_top=0, font_size=16, height=300)
+            style=Pack(flex=1, margin=15, margin_top=0, font_size=14, height=550)
         )
         scroll_content.add(self.detail_testo)
 
