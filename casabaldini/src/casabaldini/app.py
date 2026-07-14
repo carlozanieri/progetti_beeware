@@ -86,20 +86,22 @@ class CasaBaldiniApp(toga.App):
         self.dettaglio_page = DettaglioSliderPage(self)
         self.dettaglio_page.build()
 
-        # Finestra principale
-        self.main_window = toga.MainWindow(title="CasaBaldini")
-        self.main_window.content = self.root_box
-        self.main_window.show()
-
+        # Home page (creala prima di usarla)
         self.home_page_view = HomePage(self)
         self.home_page_view.build()
-        asyncio.create_task(self._inizializza())
 
+        # Finestra principale
+        self.main_window = toga.MainWindow(title="CasaBaldini")
+        self.main_window.content = self.home_page_view.box  # Avvia con Home
+        self.main_window.show()
+
+        asyncio.create_task(self._inizializza())
+        
     async def _inizializza(self):
         """Carica tutti i dati iniziali"""
         await self.menu_manager.load_data()
-        await self.slider_manager.load("index")
-        await self.links_manager.load()
+        await self.home_page_view._load_images()  # Carica immagini home
+        # Lo slider e i link si caricheranno quando l'utente naviga su Casabaldini
 
     def _mostra_dettaglio_slide(self, slide, img):
         """Apre la pagina di dettaglio per la slide corrente"""

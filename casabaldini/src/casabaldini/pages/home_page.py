@@ -1,6 +1,5 @@
 """Pagina Home statica con logo e immagine"""
 
-
 import asyncio
 import httpx
 import toga
@@ -22,6 +21,21 @@ class HomePage:
         """Costruisce la pagina Home"""
         self.box = toga.Box(style=Pack(direction=COLUMN, flex=1, background_color="#000000"))
 
+        # Navbar (uguale a quella principale)
+        navbar = toga.Box(style=Pack(direction=ROW, background_color="#043a55", padding=8))
+        btn_hamburger = toga.Button(
+            "☰",
+            on_press=self.app.menu_manager.toggle,
+            style=Pack(width=40, height=40, background_color="#043a55", color="white", font_size=18)
+        )
+        titolo_navbar = toga.Label(
+            "CasaBaldini",
+            style=Pack(flex=1, font_size=18, font_weight="bold", color="white", margin_left=10)
+        )
+        navbar.add(btn_hamburger)
+        navbar.add(titolo_navbar)
+        self.box.add(navbar)
+
         # Contenuto scrollabile
         scroll_content = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
 
@@ -39,7 +53,7 @@ class HomePage:
             style=Pack(font_size=24, font_weight="bold", color="white", margin=20)
         ))
         scroll_content.add(toga.Label(
-            "Un luogo di charme nel cuore del Mugello",
+            "Nel cuore del Mugello a pochi km. da Firenze",
             style=Pack(font_size=16, color="#cccccc", margin=10)
         ))
 
@@ -48,17 +62,9 @@ class HomePage:
             content=scroll_content,
             vertical=True,
             horizontal=False,
-            style=Pack(flex=1)
+            style=Pack(flex=1, padding=10)
         )
         self.box.add(scroll)
-
-        # Pulsante per tornare indietro
-        btn_back = toga.Button(
-            "← Torna alla Home",
-            on_press=self.close,
-            style=Pack(margin=10, background_color="#043a55", color="white")
-        )
-        self.box.add(btn_back)
 
         return self.box
 
