@@ -13,6 +13,7 @@ from .menu import MenuManager
 from .pages.dovemangiare import DoveMangiarePage
 from .pages.prenotazioni import PrenotazioniPage
 from .pages.dettaglio_slider import DettaglioSliderPage
+from .pages.home_page import HomePage
 
 
 class CasaBaldiniApp(toga.App):
@@ -90,6 +91,8 @@ class CasaBaldiniApp(toga.App):
         self.main_window.content = self.root_box
         self.main_window.show()
 
+        self.home_page_view = HomePage(self)
+        self.home_page_view.build()
         asyncio.create_task(self._inizializza())
 
     async def _inizializza(self):

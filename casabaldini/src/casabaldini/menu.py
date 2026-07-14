@@ -109,15 +109,25 @@ class MenuManager:
             link = child.get("link", "")
             titolo = child.get("titolo", "")
 
-            if tipopage == "interna" and link.startswith("/casabaldini/"):
-                dir_val = link.split("/")[-1]
-                btn = toga.Button(
-                    titolo,
-                    on_press=lambda w, d=dir_val, t=titolo: self._select_section(d, t),
-                    style=Pack(margin_left=25, margin_top=5, margin_bottom=5,
-                               background_color="#1a3a4a", color="white", flex=1)
-                )
-                self.menu_voci_box.add(btn)
+            if tipopage == "interna":
+                if link == "/":
+                    # Home page statica
+                    btn = toga.Button(
+                        titolo,
+                        on_press=lambda w: asyncio.create_task(self._select_home()),
+                        style=Pack(margin_left=25, margin_top=5, margin_bottom=5,
+                                   background_color="#1a3a4a", color="white", flex=1)
+                    )
+                    self.menu_voci_box.add(btn)
+                elif link.startswith("/casabaldini/"):
+                    dir_val = link.split("/")[-1]
+                    btn = toga.Button(
+                        titolo,
+                        on_press=lambda w, d=dir_val, t=titolo: self._select_section(d, t),
+                        style=Pack(margin_left=25, margin_top=5, margin_bottom=5,
+                                   background_color="#1a3a4a", color="white", flex=1)
+                    )
+                    self.menu_voci_box.add(btn)
 
             elif tipopage == "modale" and "dovemangiare" in link:
                 btn = toga.Button(
@@ -153,4 +163,7 @@ class MenuManager:
         self.close()
         await self.app.prenotazioni_page.open()
 
-        
+    async def _select_home(self):
+        """Apre la Home page statica"""
+        self.close()
+        self.app.home_page_view.open()

@@ -67,6 +67,7 @@ class DettaglioSliderPage:
         self.detail_image.image = img
         self.detail_titolo.text = slide.get("titolo", "")
         self.detail_testo.value = slide.get("testo", slide.get("caption", ""))
+
         self.app.main_window.content = self.box
 
     def close(self, widget=None):
