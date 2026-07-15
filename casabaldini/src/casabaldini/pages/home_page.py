@@ -50,15 +50,15 @@ class HomePage:
         # Testo introduttivo
         scroll_content.add(toga.Label(
             "Benvenuti a CasaBaldini",
-            style=Pack(font_size=24, font_weight="bold", color="white", margin_left=10, margin_right=140)
+            style=Pack(font_size=24, font_weight="bold", color="white", margin_left=5, margin_right=140)
         ))
         scroll_content.add(toga.Label(
             "Nel cuore del Mugello",
-            style=Pack(font_size=16, color="#cccccc", margin_left=10, margin_right=140)
+            style=Pack(font_size=16, color="#cccccc", margin_left=5, margin_right=140)
         ))
         scroll_content.add(toga.Label(
             " a pochi km. da Firenze",
-            style=Pack(font_size=16, color="#cccccc", margin_left=10, margin_right=140)
+            style=Pack(font_size=16, color="#cccccc", margin_left=5, margin_right=140)
         ))
 
         # Scroll container
@@ -75,7 +75,21 @@ class HomePage:
     def open(self):
         """Apre la pagina Home e carica le immagini"""
         self.app.main_window.content = self.box
+        # Forza il layout e poi centra
+        asyncio.create_task(self._adjust_layout())
         asyncio.create_task(self._load_images())
+
+    async def _adjust_layout(self):
+        """Regola il layout in base alla larghezza dello schermo"""
+        await asyncio.sleep(0.5)  # Aspetta che la finestra sia renderizzata
+        # Prova a ottenere la larghezza
+        try:
+            window_width = self.app.main_window.content.style.width
+            if window_width:
+                # Calcola margini per centrare
+                print(f"Larghezza finestra: {window_width}")
+        except Exception as e:
+            print(f"Impossibile ottenere larghezza: {e}")
 
     async def _load_images(self):
         """Scarica le immagini dal server"""
