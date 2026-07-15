@@ -40,21 +40,25 @@ class HomePage:
         scroll_content = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
 
         # Logo in alto (placeholder, verrà caricato dopo)
-        self.logo_view = toga.ImageView(style=Pack(width=300, height=150, margin=20))
+        self.logo_view = toga.ImageView(style=Pack(width=250, align_items="center", margin_left=-10, margin_right=140))
         scroll_content.add(self.logo_view)
 
         # Immagine principale (placeholder)
-        self.header_view = toga.ImageView(style=Pack(width=500, height=350, margin=10))
+        self.header_view = toga.ImageView(style=Pack(width=500, height=350, margin_left=-1, margin_right=40))
         scroll_content.add(self.header_view)
 
         # Testo introduttivo
         scroll_content.add(toga.Label(
             "Benvenuti a CasaBaldini",
-            style=Pack(font_size=24, font_weight="bold", color="white", margin=20)
+            style=Pack(font_size=24, font_weight="bold", color="white", margin_left=10, margin_right=140)
         ))
         scroll_content.add(toga.Label(
-            "Nel cuore del Mugello a pochi km. da Firenze",
-            style=Pack(font_size=16, color="#cccccc", margin=10)
+            "Nel cuore del Mugello",
+            style=Pack(font_size=16, color="#cccccc", margin_left=10, margin_right=140)
+        ))
+        scroll_content.add(toga.Label(
+            " a pochi km. da Firenze",
+            style=Pack(font_size=16, color="#cccccc", margin_left=10, margin_right=140)
         ))
 
         # Scroll container
