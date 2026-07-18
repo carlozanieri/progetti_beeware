@@ -50,24 +50,27 @@ class HomePage:
         # Testo introduttivo
         scroll_content.add(toga.Label(
             "Benvenuti a CasaBaldini",
-            style=Pack(font_size=24, font_weight="bold", color="white",  margin_right=150)
+            style=Pack(font_size=24, font_weight="bold", color="white", margin_left=5, margin_right=140)
         ))
         scroll_content.add(toga.Label(
             "Barberino di Mugello",
-            style=Pack(font_size=16, color="#cccccc", margin_right=150)
+            style=Pack(font_size=16, color="#cccccc", margin_left=5, margin_right=140)
+        ))
+        scroll_content.add(toga.Label(
+            "2,5 Km. dall'uscita dell'Autostrada A1",
+            style=Pack(font_size=14, color="#cccccc", margin_left=5, margin_right=140)
         ))
         scroll_content.add(toga.Label(
             " a pochi km. da Firenze",
-            style=Pack(font_size=16, color="#cccccc", margin_right=150)
-        ))
-
-        scroll_content.add(toga.Label(
-            " _________________________________________",
-            style=Pack(font_size=15, color="#cccccc", margin_right=150)
+            style=Pack(font_size=16, color="#cccccc", margin_left=5, margin_right=140)
         ))
         scroll_content.add(toga.Label(
-            "Per informazioni telef. +39 3207060411",
-            style=Pack(font_size=15, color="#cccccc",  margin_right=150)
+            " ______________________________________________________",
+            style=Pack(font_size=16, color="#cccccc", margin_left=5, margin_right=140)
+        ))
+        scroll_content.add(toga.Label(
+            " Per informazioni e prenotazioni telefona al +39 3207060411",
+            style=Pack(font_size=16, color="#cccccc", margin_left=5, margin_right=140)
         ))
         # Scroll container
         scroll = toga.ScrollContainer(
