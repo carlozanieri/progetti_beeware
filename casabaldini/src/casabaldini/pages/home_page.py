@@ -21,7 +21,7 @@ class HomePage:
         """Costruisce la pagina Home"""
         self.box = toga.Box(style=Pack(direction=COLUMN, flex=1, background_color="#000000"))
 
-        # Navbar (uguale a quella principale)
+        # Navbar
         navbar = toga.Box(style=Pack(direction=ROW, background_color="#043a55", padding=8))
         btn_hamburger = toga.Button(
             "☰",
@@ -37,44 +37,48 @@ class HomePage:
         self.box.add(navbar)
 
         # Contenuto scrollabile
-        scroll_content = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+        scroll_content = toga.Box(style=Pack(direction=COLUMN, flex=1))
 
-        # Logo in alto (placeholder, verrà caricato dopo)
-        self.logo_view = toga.ImageView(style=Pack(width=250, align_items="center", margin_left=-10, margin_right=140))
+        # Logo — occupa tutta la larghezza, altezza fissa
+        self.logo_view = toga.ImageView(
+            style=Pack(flex=1, height=150)
+        )
         scroll_content.add(self.logo_view)
 
-        # Immagine principale (placeholder)
-        self.header_view = toga.ImageView(style=Pack(width=500, height=350, margin_left=-1, margin_right=40))
+        # Immagine principale — occupa tutta la larghezza, altezza fissa
+        self.header_view = toga.ImageView(
+            style=Pack(flex=1, height=300)
+        )
         scroll_content.add(self.header_view)
 
-        # Testo introduttivo
+        # Testi — occupano tutta la larghezza
         scroll_content.add(toga.Label(
             "Benvenuti a CasaBaldini",
-            style=Pack(font_size=24, font_weight="bold", color="white",  margin_right=150)
+            style=Pack(font_size=22, font_weight="bold", color="white",
+                       margin_top=15, margin_left=10, margin_right=10, text_align="center")
         ))
         scroll_content.add(toga.Label(
-            "Barberino di Mugello",
-            style=Pack(font_size=16, color="#cccccc", margin_right=150)
+            "Barberino di Mugello, a pochi km. da Firenze",
+            style=Pack(font_size=15, color="#cccccc",
+                       margin_top=5, margin_left=10, margin_right=10, text_align="center")
         ))
         scroll_content.add(toga.Label(
-            " a pochi km. da Firenze",
-            style=Pack(font_size=16, color="#cccccc", margin_right=150)
-        ))
-
-        scroll_content.add(toga.Label(
-            " _________________________________________",
-            style=Pack(font_size=15, color="#cccccc", margin_right=150)
+            "─" * 40,
+            style=Pack(font_size=12, color="#555555",
+                       margin_top=10, margin_left=10, margin_right=10, text_align="center")
         ))
         scroll_content.add(toga.Label(
             "Per informazioni telef. +39 3207060411",
-            style=Pack(font_size=15, color="#cccccc",  margin_right=150)
+            style=Pack(font_size=15, color="#cccccc",
+                       margin_top=5, margin_left=10, margin_right=10, margin_bottom=20, text_align="center")
         ))
+
         # Scroll container
         scroll = toga.ScrollContainer(
             content=scroll_content,
             vertical=True,
             horizontal=False,
-            style=Pack(flex=1, padding=10)
+            style=Pack(flex=1)
         )
         self.box.add(scroll)
 
@@ -83,21 +87,7 @@ class HomePage:
     def open(self):
         """Apre la pagina Home e carica le immagini"""
         self.app.main_window.content = self.box
-        # Forza il layout e poi centra
-        asyncio.create_task(self._adjust_layout())
         asyncio.create_task(self._load_images())
-
-    async def _adjust_layout(self):
-        """Regola il layout in base alla larghezza dello schermo"""
-        await asyncio.sleep(0.5)  # Aspetta che la finestra sia renderizzata
-        # Prova a ottenere la larghezza
-        try:
-            window_width = self.app.main_window.content.style.width
-            if window_width:
-                # Calcola margini per centrare
-                print(f"Larghezza finestra: {window_width}")
-        except Exception as e:
-            print(f"Impossibile ottenere larghezza: {e}")
 
     async def _load_images(self):
         """Scarica le immagini dal server"""
@@ -108,7 +98,7 @@ class HomePage:
                 try:
                     resp = await client.get(logo_url)
                     resp.raise_for_status()
-                    self.logo_view.image = toga.Image(data=resp.content)
+                    self.logo_view.image = toga.Image(src=resp.content)
                 except Exception as e:
                     print(f"Errore logo: {e}")
 
@@ -117,7 +107,7 @@ class HomePage:
                 try:
                     resp = await client.get(header_url)
                     resp.raise_for_status()
-                    self.header_view.image = toga.Image(data=resp.content)
+                    self.header_view.image = toga.Image(src=resp.content)
                 except Exception as e:
                     print(f"Errore header: {e}")
 
