@@ -11,5 +11,5 @@ DB_PASSWORD = "treX39"
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # Porta su cui gira l'API
-API_PORT = 3333
+API_PORT = 7878
 API_HOST = "0.0.0.0"
