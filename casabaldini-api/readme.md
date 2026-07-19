@@ -47,7 +47,7 @@ python main.py
 Oppure direttamente con uvicorn:
 
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 3333 --reload
+uvicorn main:app --host 0.0.0.0 --port 7878 --reload
 ```
 
 ## Endpoints
