@@ -1,10 +1,11 @@
 """Pagina Dove Mangiare"""
 
 import webbrowser
+import httpx
 import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN
-from ..api import fetch_foods
+from ..api import fetch_foods, IMG_BASE
 
 
 class DoveMangiarePage:
@@ -44,33 +45,43 @@ class DoveMangiarePage:
         self.app.main_window.content = self.app.root_box
 
     async def _load(self):
-        """Carica l'elenco ristoranti senza icone (per compatibilità GTK)"""
-        from ..api import fetch_foods
-
+        """Carica l'elenco ristoranti con icone"""
         try:
             foods_data = await fetch_foods()
             items = []
 
-            for food in foods_data:
-                titolo = food.get("titolo", "")
-                indirizzo = food.get("indirizzo", "")
-                telefono = food.get("telefono", "")
-                url = food.get("link", "")
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                for food in foods_data:
+                    titolo = food.get("titolo", "")
+                    indirizzo = food.get("indirizzo", "")
+                    telefono = food.get("telefono", "")
+                    url = food.get("link", "")
+                    img_name = food.get("img", "")
+                    img_url = f"{IMG_BASE}/ristoranti/{img_name}"
 
-                self.foods_urls[titolo] = url
+                    self.foods_urls[titolo] = url
 
-                subtitle = ""
-                if indirizzo:
-                    subtitle += f"📍 {indirizzo}"
-                if telefono:
-                    subtitle += f"  📞 {telefono}"
+                    subtitle = ""
+                    if indirizzo:
+                        subtitle += f"📍 {indirizzo}"
+                    if telefono:
+                        subtitle += f"  📞 {telefono}"
 
-                items.append({
-                    "title": f"🍽️  {titolo}",
-                    "subtitle": subtitle,
-                    "icon": None,
-                })
-                print(f"Aggiunto: {titolo}")
+                    # Scarica l'icona del ristorante
+                    icon = None
+                    try:
+                        img_response = await client.get(img_url)
+                        img_response.raise_for_status()
+                        icon = toga.Image(src=img_response.content)
+                    except Exception as img_err:
+                        print(f"Errore immagine {img_name}: {img_err}")
+
+                    items.append({
+                        "title": titolo,
+                        "subtitle": subtitle,
+                        "icon": icon,
+                    })
+                    print(f"Aggiunto: {titolo}")
 
             if self.ristoranti_list is not None:
                 self.box.remove(self.ristoranti_list)
@@ -93,8 +104,6 @@ class DoveMangiarePage:
         if hasattr(widget, 'selection') and widget.selection is not None:
             row = widget.selection
             titolo = row.title if hasattr(row, 'title') else row.get('title', '')
-            # Rimuovi l'emoji iniziale se presente
-            titolo_pulito = titolo.replace("🍽️  ", "").replace("🍽 ", "").strip()
-            url = self.foods_urls.get(titolo_pulito, "")
+            url = self.foods_urls.get(titolo, "")
             if url:
                 webbrowser.open(url)
