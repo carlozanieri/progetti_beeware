@@ -22,14 +22,14 @@ class HomePage:
         self.box = toga.Box(style=Pack(direction=COLUMN, flex=1, background_color="#000000"))
 
         # Navbar
-        navbar = toga.Box(style=Pack(direction=ROW, background_color="#043a55", padding=8))
+        navbar = toga.Box(style=Pack(direction=ROW, background_color="#043a55", padding=8,width=48))
         btn_hamburger = toga.Button(
             "☰",
             on_press=self.app.menu_manager.toggle,
-            style=Pack(width=40, height=40, background_color="#043a55", color="white", font_size=18)
+            style=Pack(width=48, height=48, background_color="#043a55", color="white", font_size=18)
         )
         titolo_navbar = toga.Label(
-            "CasaBaldini",
+            "",
             style=Pack(flex=1, font_size=18, font_weight="bold", color="white", margin_left=10)
         )
         navbar.add(btn_hamburger)
@@ -58,10 +58,55 @@ class HomePage:
                        margin_top=15, margin_left=10, margin_right=10, text_align="center")
         ))
         scroll_content.add(toga.Label(
-            "Barberino di Mugello, a pochi km. da Firenze",
-            style=Pack(font_size=15, color="#cccccc",
+                    "─" * 40,
+                    style=Pack(font_size=11, color="#555555",
+                               margin_top=10, margin_left=10, margin_right=10, text_align="center")
+                ))
+        scroll_content.add(toga.Label(
+            "Casa Baldini, situata nel cuore del centro",
+            style=Pack(font_size=14, color="#cccccc",
                        margin_top=5, margin_left=10, margin_right=10, text_align="center")
         ))
+        scroll_content.add(toga.Label(
+                    "storico, fra il 'canto alla brina'",
+                    style=Pack(font_size=14, color="#cccccc",
+                               margin_top=5, margin_left=10, margin_right=10, text_align="center")
+                ))
+        scroll_content.add(toga.Label(
+                    " e la 'serra della mezza luna',",
+                    style=Pack(font_size=14, color="#cccccc",
+                               margin_top=5, margin_left=10, margin_right=10, text_align="center")
+                ))
+        scroll_content.add(toga.Label(
+                            "è residenza della nostra famiglia dalla fine ",
+                            style=Pack(font_size=14, color="#cccccc",
+                                       margin_top=5, margin_left=10, margin_right=10, text_align="center")
+                        ))
+        scroll_content.add(toga.Label(
+                                    " del 1800 e ne conserva tracce e ricordi. ",
+                                    style=Pack(font_size=14, color="#cccccc",
+                                               margin_top=5, margin_left=10, margin_right=10, text_align="center")
+                                ))
+        scroll_content.add(toga.Label(
+                                    "Con mio marito Carlo abbiamo deciso di",
+                                    style=Pack(font_size=14, color="#cccccc",
+                                               margin_top=5, margin_left=10, margin_right=10, text_align="center")
+                                ))
+        scroll_content.add(toga.Label(
+                                            " aprirla agli ospiti",
+                                            style=Pack(font_size=14, color="#cccccc",
+                                                       margin_top=5, margin_left=10, margin_right=10, text_align="center")
+                                        ))
+        scroll_content.add(toga.Label(
+                                            "intendendo l'ospitalità, per chi lo desidera,",
+                                            style=Pack(font_size=14, color="#cccccc",
+                                                       margin_top=5, margin_left=10, margin_right=10, text_align="center")
+                                        ))
+        scroll_content.add(toga.Label(
+                                                    "  anche come momento privilegiato di incontro.",
+                                                    style=Pack(font_size=14, color="#cccccc",
+                                                               margin_top=5, margin_left=10, margin_right=10, text_align="center")
+                                                ))
         scroll_content.add(toga.Label(
             "─" * 40,
             style=Pack(font_size=12, color="#555555",
@@ -69,7 +114,7 @@ class HomePage:
         ))
         scroll_content.add(toga.Label(
             "Per informazioni telef. +39 3207060411",
-            style=Pack(font_size=15, color="#cccccc",
+            style=Pack(font_size=14, color="#cccccc",
                        margin_top=5, margin_left=10, margin_right=10, margin_bottom=20, text_align="center")
         ))
 
