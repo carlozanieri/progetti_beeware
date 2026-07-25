@@ -87,22 +87,41 @@ class SliderManager:
         self.image_view.image = None
         self.titolo_label.text = ""
         self.caption_label.text = ""
-
+        self.logo_view = None
         try:
+            # 1. Scarica i metadati (veloce)
             self.slides = await fetch_slider(dir_val)
-            self.status_label.text = f"Scarico {len(self.slides)} immagini..."
-
+            total = len(self.slides)
+            self.status_label.text = f"Scarico {total} immagini..."
+            logo_url = f"{IMG_BASE}/index/logo.jpg"
+            self.logo_view = toga.ImageView(
+                        style=Pack(flex=1, height=150)
+                    )
+            try:
+                async with httpx.AsyncClient(timeout=15.0) as client:
+                    resp = await client.get(logo_url)
+                    resp.raise_for_status()
+                    self.logo_view.image = toga.Image(src=resp.content)
+            except Exception as e:
+                print(f"Errore logo: {e}")
+ 
+            # 2. Scarica TUTTE le immagini in parallelo, in una sola volta
             async with httpx.AsyncClient(timeout=30.0) as client:
-                for i, slide in enumerate(self.slides):
-                    img_name = slide.get("img", "")
-                    img_url = f"{IMG_BASE}/{dir_val}/{img_name}"
-                    try:
-                        data = await download_image(client, img_url)
-                        self.slide_images.append(toga.Image(data=data))
-                        self.status_label.text = f"Immagine {i+1}/{len(self.slides)}..."
-                    except Exception as img_err:
-                        print(f"Errore immagine {img_name}: {img_err}")
+                urls = [f"{IMG_BASE}/{dir_val}/{s.get('img', '')}" for s in self.slides]
+                
+                # Lancia tutti i download contemporaneamente
+                tasks = [download_image(client, url) for url in urls]
+                results = await asyncio.gather(*tasks, return_exceptions=True)
+                
+                # 3. Converti i risultati in oggetti Image (fuori dal contesto UI)
+                self.slide_images = []
+                for i, result in enumerate(results):
+                    if isinstance(result, Exception):
+                        print(f"Errore immagine {i}: {result}")
                         self.slide_images.append(None)
+                    else:
+                        self.slide_images.append(toga.Image(data=result))
+                        self.status_label.text = f"Immagine {i+1}/{total}..."
 
             self.status_label.text = ""
             self._aggiorna_indicatori()
