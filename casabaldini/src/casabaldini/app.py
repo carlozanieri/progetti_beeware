@@ -53,23 +53,32 @@ class CasaBaldiniApp(toga.App):
 
         # Slider manager (creato una volta sola, con callback)
         self.slider_manager = SliderManager(
+        self.image_view, self.titolo_label, self.caption_label, self.status_label,
+        on_image_click=self._mostra_dettaglio_slide
+        )
+        nav_row = self.slider_manager.build_controls()
+        self.slider_manager = SliderManager(
             self.image_view, self.titolo_label, self.caption_label, self.status_label,
             on_image_click=self._mostra_dettaglio_slide
         )
-        nav_row = self.slider_manager.build_controls()
-
+        
+        # Loading box per lo slider (con clessidra)
+        self.root_box.add(navbar)
+        self.loading_box = self.slider_manager.build_loading_box()
+        self.loading_box.style.visibility = "hidden"
+        self.slider_manager.loading_box = self.loading_box
+        controls = self.slider_manager.build_controls()                
         # Links manager
         self.links_manager = LinksManager()
         links_scroll = self.links_manager.build()
 
         # Assembla root_box
-        self.root_box.add(navbar)
-        self.root_box.add(self.status_label)
         self.root_box.add(self.image_view)
+        self.root_box.add(self.loading_box)  # aggiungi questa riga
         self.root_box.add(self.titolo_label)
         self.root_box.add(self.caption_label)
-        self.root_box.add(nav_row)
-        self.root_box.add(links_scroll)
+        controls = self.slider_manager.build_controls()
+        self.root_box.add(controls)
 
         # Menu manager
         self.menu_manager = MenuManager(self)
